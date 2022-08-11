@@ -4,26 +4,31 @@ import {Preloader} from '../components/Preloader'
 import {Search} from '../components/Search'
 
 class Main extends React.Component {
-    state = {
-        movies: [],
-    }
+  state = {
+    movies: [],
+  }
 
-    componentDidMount() {
-        fetch('http://www.omdbapi.com/?apikey=6a9aae1a&s=matrix')
-            .then(res => res.json())
-            .then(data => this.setState({movies: data.Search}))
-    }
+  // componentDidMount() {
+  //   fetch('http://img.omdbapi.com/?apikey=6a9aae1a&s=matrix')
+  //     .then(res => res.json())
+  //     .then(data => this.setState({movies: data}))
+  // }
 
-    render() {
-        const {movies} = this.state
+  searchMovie = (dataSearch, type = 'all') => {
+    fetch(`http://www.omdbapi.com/?apikey=6a9aae1a&s=${dataSearch}${type !== 'all' ? `&type=${type}` : ''}`)
+      .then(res => res.json())
+      .then(data => this.setState({movies: data.Search}))
+  }
 
-        return <main className="container content">
-            <Search/>
-            {
-                movies.length ? (<MoviesList movies={this.state.movies}/>) : <Preloader/>
-            }
-            
-        </main>
+  render() {
+    const {movies} = this.state
+
+    return <main className="container content">
+      <Search searchMovie={this.searchMovie}/>
+      {
+        movies.length ? (<MoviesList movies={this.state.movies}/>) : <Preloader/>
+      }     
+      </main>
     }
 }
 
