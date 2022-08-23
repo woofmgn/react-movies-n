@@ -10,28 +10,26 @@ class Main extends React.Component {
   }
 
   componentDidMount() {
+    this.setState({loading: true})
     fetch('http://www.omdbapi.com/?apikey=6a9aae1a&s=terminator')
       .then(res => res.json())
-      .then(data => this.setState({movies: data.Search}))
+      .then(data => this.setState({movies: data.Search, loading: false}))
   }
 
   searchMovie = (dataSearch, type = 'all') => {
+    this.setState({loading: true});
     fetch(`http://www.omdbapi.com/?apikey=6a9aae1a&s=${dataSearch}${type !== 'all' ? `&type=${type}` : ''}`)
       .then(res => res.json())
-      .then(data => this.setState({movies: data.Search}))
+      .then(data => this.setState({movies: data.Search, loading: false}))
   }
 
   render() {
-    const {movies} = this.state;
+    const {movies, loading} = this.state;
 
     return (
       <main className="container content">
         <Search searchMovie={this.searchMovie}/>
-        {movies.length ? (
-          <MoviesList movies={this.state.movies}/>
-          ) : (
-          <Preloader/>
-          )}     
+        {loading ? <Preloader/> : <MoviesList movies={movies}/>}     
       </main>
     )
     }
